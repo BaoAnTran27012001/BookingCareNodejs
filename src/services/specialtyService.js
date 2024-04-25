@@ -47,4 +47,59 @@ const getAllSpecialtiesService = () => {
 
   })
 }
-module.exports = { createSpecialtyService, getAllSpecialtiesService }
+const getDetailSpecialtyByIdService = async (inputId, location) => {
+  let data = {}
+  let result = null
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (!inputId || !location) {
+        resolve({
+          errCode: 1,
+          errMessage: "Missing required parameters",
+        })
+      } else {
+        let dataSpecialty = {}
+        dataSpecialty = await db.Specialty.findOne({
+          where: {
+            id: inputId
+          },
+          attributes: ['descriptionHTML', 'descriptionMarkdown']
+        });
+        if (dataSpecialty) {
+          data = dataSpecialty.dataValues
+          let doctorSpecialty = [];
+          if (location === 'ALL') {
+            doctorSpecialty = await db.Doctor_Info.findAll({
+              raw: true,
+              where: { specialtyId: inputId },
+              attributes: ['doctorId', 'provinceId']
+            },
+            )
+
+          } else {
+            data = dataSpecialty.dataValues
+            doctorSpecialty = await db.Doctor_Info.findAll({
+              raw: true,
+              where: { specialtyId: inputId, provinceId: location },
+              attributes: ['doctorId', 'provinceId']
+            },
+            )
+          }
+          result = doctorSpecialty
+          data = { ...data, doctorSpecialtyList: result }
+          console.log('>>Check data doctorSpecialtyHADASD ', data);
+        } else {
+          data = {}
+        }
+        resolve({
+          errMessage: 'ok',
+          errCode: 0,
+          data
+        })
+      }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+module.exports = { createSpecialtyService, getAllSpecialtiesService, getDetailSpecialtyByIdService }

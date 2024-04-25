@@ -6,7 +6,9 @@ import {
   bulkCreateScheduleService,
   getScheduleDoctorByDateService,
   getExtraInfoDoctorByIdService,
-  getProfileDoctorByIdService
+  getProfileDoctorByIdService,
+  getListPatientService,
+  sendRemedyService
 } from '../services/doctorService';
 const getDoctorHome = async (req, res) => {
   let limit = req.query.limit;
@@ -112,6 +114,32 @@ const getProfileDoctorById = async (req, res) => {
     });
   }
 }
+const getListPatient = async (req, res) => {
+  try {
+    let info = await getListPatientService(req.query.doctorId, req.query.date);
+    console.log(info);
+    return res.status(200).json(info);
+  } catch (error) {
+    console.log(error);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: 'Error from the server',
+    });
+  }
+}
+const sendRemedy = async (req, res) => {
+  try {
+    let info = await sendRemedyService(req.body);
+    console.log(info);
+    return res.status(200).json(info);
+  } catch (error) {
+    console.log(error);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: 'Error from the server',
+    });
+  }
+}
 module.exports = {
   getDoctorHome,
   getAllDoctors,
@@ -121,5 +149,6 @@ module.exports = {
   getScheduleDoctorByDate,
   getExtraInfoDoctorById,
   getProfileDoctorById,
-  
+  getListPatient,
+  sendRemedy
 };

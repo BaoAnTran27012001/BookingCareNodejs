@@ -48,7 +48,49 @@ let getBodyHTMLEmail = (dataSend) => {
   }
   return result;
 }
+let getBodyHTMLEmailRemedy = (dataSend) => {
+  let result = '';
+  if (dataSend.language === 'vi') {
+    result = `<h3>Xin chào ${dataSend.patientName}</h3>
+            <p>Thông tin đơn thuốc/ hóa đơn được gửi trong file đính kèm:</p>
+            <div>Xin chân thành cảm ơn</div>
+    `
+  } else if (dataSend.language === 'en') {
+    result = `<h3>Dear${dataSend.patientName}</h3>
+    <p>You received this email because of booking online successfully.</p>
 
+    <div>Thank you</div>
+`
+  }
+  return result;
+}
+let sendAttachment = async (dataSend) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // Use `true` for port 465, `false` for all other ports
+    auth: {
+      user: process.env.EMAIL_APP,
+      pass: process.env.EMAIL_APP_PASSWORD,
+    },
+  });
+  // send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: '"Viện Xuân Quỳnh 👻" <nhumai9429@gmail.com>', // sender address
+    to: dataSend.email, // list of receivers
+    subject: "Kết quả đặt lịch khám bệnh (Booking Result)", // Subject line
+    html: getBodyHTMLEmailRemedy(dataSend), // html body
+    attachments: [
+      {
+        filename: `Remedy-${dataSend.patientId}-${new Date().getTime()}.png`,
+        content: dataSend.imgBase64.split("base64,")[1],
+        encoding: 'base64'
+      }
+    ]
+
+  });
+}
 module.exports = {
-  sendSimpleEmail
+  sendSimpleEmail,
+  sendAttachment
 }

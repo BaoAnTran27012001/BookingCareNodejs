@@ -26,9 +26,11 @@ import {
   getScheduleDoctorByDate,
   getExtraInfoDoctorById,
   getProfileDoctorById,
+  getListPatient, sendRemedy
 } from '../controllers/doctorController';
 import { postBookAppointment, postVerifyBookAppointment } from '../controllers/patientController';
-import { createNewSpecialty,getAllSpecialties } from '../controllers/specialtyController';
+import { createNewSpecialty, getAllSpecialties, getDetailSpecialtyById } from '../controllers/specialtyController';
+import { createClinic, getAllClinics, getDetailClinicById } from '../controllers/clinicController';
 const router = express.Router();
 //AIzaSyA52cYI__2wBs5h31ml6K534UPSzNewpl0
 
@@ -60,6 +62,15 @@ const initWebRoutes = (app) => {
   router.post('/api/create-new-specialty', createNewSpecialty);
   router.get('/api/get-all-doctors', getAllDoctors);
   router.get('/api/get-all-specialties', getAllSpecialties);
+  router.get('/api/get-list-patient-for-doctor', getListPatient);
+
+  router.get('/api/get-detail-specialty-by-id', getDetailSpecialtyById);
+
+  router.post('/api/create-new-clinic', createClinic);
+  router.post('/api/send-remedy', sendRemedy);
+  router.get('/api/get-clinics', getAllClinics);
+  router.get('/api/get-clinic-by-id', getDetailClinicById);
+
   return app.use('/', router);
 };
 module.exports = initWebRoutes;

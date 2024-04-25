@@ -1,8 +1,21 @@
+import { createClinicService, getAllClinicsService, getDetailClinicsByIdService } from "../services/clinicService";
+let createClinic = async (req, res) => {
+  try {
+    let info = await createClinicService(req.body);
+    console.log(info);
+    return res.status(200).json(info);
+  } catch (error) {
+    console.log(error);
+    return res.status(200).json({
+      errCode: -1,
+      errMessage: 'Error from the server',
+    });
+  }
+}
 
-import { createSpecialtyService,getDetailSpecialtyByIdService,getAllSpecialtiesService } from "../services/specialtyService";
-let createNewSpecialty = async (req, res) => {
+let getAllClinics = async (req, res) => {
   try {
-    let info = await createSpecialtyService(req.body);
+    let info = await getAllClinicsService();
     console.log(info);
     return res.status(200).json(info);
   } catch (error) {
@@ -13,9 +26,9 @@ let createNewSpecialty = async (req, res) => {
     });
   }
 }
-const getAllSpecialties = async(req, res) => {
+let getDetailClinicById = async (req, res) => {
   try {
-    let info = await getAllSpecialtiesService();
+    let info = await getDetailClinicsByIdService(req.query.id);
     console.log(info);
     return res.status(200).json(info);
   } catch (error) {
@@ -26,17 +39,8 @@ const getAllSpecialties = async(req, res) => {
     });
   }
 }
-const getDetailSpecialtyById = async(req,res)=>{
-  try {
-    let info = await getDetailSpecialtyByIdService(req.query.id,req.query.location);
-    console.log(info);
-    return res.status(200).json(info);
-  } catch (error) {
-    console.log(error);
-    return res.status(200).json({
-      errCode: -1,
-      errMessage: 'Error from the server',
-    });
-  }
+module.exports = {
+  createClinic,
+  getAllClinics,
+  getDetailClinicById
 }
-module.exports = { createNewSpecialty, getAllSpecialties,getDetailSpecialtyById }
